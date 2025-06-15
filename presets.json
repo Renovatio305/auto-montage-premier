@@ -1,0 +1,478 @@
+[
+  {
+    "name": "Стандартный",
+    "description": "Базовый пресет без эффектов",
+    "pitch": "0",
+    "kenBurns": {
+      "type": "Выключен",
+      "intensity": 0,
+      "curve": "linear",
+      "randomSeed": false
+    },
+    "transition": {
+      "type": "Fade",
+      "duration": 1.0,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": false,
+      "intensity": 0,
+      "feather": 50,
+      "roundness": 1.0
+    },
+    "colorFilter": {
+      "enabled": false,
+      "type": "Теплый",
+      "intensity": 0,
+      "lumetri": {}
+    },
+    "overlay": {
+      "enabled": false,
+      "path": ""
+    },
+    "audioEffects": {
+      "fadeIn": 0.5,
+      "fadeOut": 0.5,
+      "normalize": true,
+      "compressor": {
+        "enabled": false,
+        "threshold": -12,
+        "ratio": 4
+      },
+      "eq": {
+        "enabled": false,
+        "bass": 0,
+        "mid": 0,
+        "treble": 0
+      }
+    }
+  },
+  {
+    "name": "Кинематографичный",
+    "description": "Профессиональный вид с плавными движениями камеры",
+    "pitch": "-1",
+    "kenBurns": {
+      "type": "Zoom In",
+      "intensity": 30,
+      "curve": "ease-in-out",
+      "randomSeed": false
+    },
+    "transition": {
+      "type": "Cross Dissolve",
+      "duration": 1.5,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": true,
+      "intensity": 60,
+      "feather": 50,
+      "roundness": 1.0
+    },
+    "colorFilter": {
+      "enabled": true,
+      "type": "Холодный",
+      "intensity": 75,
+      "lumetri": {
+        "temperature": -15,
+        "tint": 5,
+        "exposure": 0.2,
+        "contrast": 10,
+        "highlights": -20,
+        "shadows": 15,
+        "whites": 0,
+        "blacks": -5,
+        "saturation": 85,
+        "vibrance": 10
+      }
+    },
+    "overlay": {
+      "enabled": false,
+      "path": ""
+    },
+    "audioEffects": {
+      "fadeIn": 1.0,
+      "fadeOut": 1.0,
+      "normalize": true,
+      "compressor": {
+        "enabled": true,
+        "threshold": -12,
+        "ratio": 4
+      },
+      "eq": {
+        "enabled": true,
+        "bass": 3,
+        "mid": 0,
+        "treble": 2
+      }
+    }
+  },
+  {
+    "name": "Динамичный",
+    "description": "Энергичный монтаж с быстрыми переходами",
+    "pitch": "-0.5",
+    "kenBurns": {
+      "type": "Random",
+      "intensity": 50,
+      "curve": "ease-out",
+      "randomSeed": true
+    },
+    "transition": {
+      "type": "Zoom",
+      "duration": 0.5,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": false,
+      "intensity": 0,
+      "feather": 50,
+      "roundness": 1.0
+    },
+    "colorFilter": {
+      "enabled": true,
+      "type": "Теплый",
+      "intensity": 50,
+      "lumetri": {
+        "temperature": 10,
+        "tint": 0,
+        "exposure": 0.3,
+        "contrast": 20,
+        "highlights": 10,
+        "shadows": -10,
+        "whites": 15,
+        "blacks": -10,
+        "saturation": 120,
+        "vibrance": 30
+      }
+    },
+    "overlay": {
+      "enabled": false,
+      "path": ""
+    },
+    "audioEffects": {
+      "fadeIn": 0.2,
+      "fadeOut": 0.2,
+      "normalize": true,
+      "compressor": {
+        "enabled": true,
+        "threshold": -8,
+        "ratio": 6
+      },
+      "eq": {
+        "enabled": true,
+        "bass": 5,
+        "mid": 2,
+        "treble": 3
+      }
+    }
+  },
+  {
+    "name": "Винтаж",
+    "description": "Ретро стиль с эффектом старой пленки",
+    "pitch": "-1.5",
+    "kenBurns": {
+      "type": "Pan Right",
+      "intensity": 20,
+      "curve": "linear",
+      "randomSeed": false
+    },
+    "transition": {
+      "type": "Dip to Black",
+      "duration": 2.0,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": true,
+      "intensity": 80,
+      "feather": 40,
+      "roundness": 0.8
+    },
+    "colorFilter": {
+      "enabled": true,
+      "type": "Сепия",
+      "intensity": 100,
+      "lumetri": {
+        "temperature": 30,
+        "tint": 10,
+        "exposure": -0.2,
+        "contrast": -10,
+        "highlights": -30,
+        "shadows": 20,
+        "whites": -20,
+        "blacks": 10,
+        "saturation": 40,
+        "vibrance": -20
+      }
+    },
+    "overlay": {
+      "enabled": true,
+      "path": "overlays/film_grain.png"
+    },
+    "audioEffects": {
+      "fadeIn": 1.5,
+      "fadeOut": 1.5,
+      "normalize": true,
+      "compressor": {
+        "enabled": false,
+        "threshold": -12,
+        "ratio": 4
+      },
+      "eq": {
+        "enabled": true,
+        "bass": -3,
+        "mid": 0,
+        "treble": -5
+      },
+      "vinylEffect": {
+        "enabled": true,
+        "noise": 15,
+        "crackle": 20
+      }
+    }
+  },
+  {
+    "name": "Минималистичный",
+    "description": "Чистый и простой стиль",
+    "pitch": "0",
+    "kenBurns": {
+      "type": "Выключен",
+      "intensity": 0,
+      "curve": "linear",
+      "randomSeed": false
+    },
+    "transition": {
+      "type": "Fade",
+      "duration": 0.5,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": false,
+      "intensity": 0,
+      "feather": 50,
+      "roundness": 1.0
+    },
+    "colorFilter": {
+      "enabled": true,
+      "type": "Черно-белый",
+      "intensity": 100,
+      "lumetri": {
+        "temperature": 0,
+        "tint": 0,
+        "exposure": 0,
+        "contrast": 15,
+        "highlights": 0,
+        "shadows": 0,
+        "whites": 10,
+        "blacks": -10,
+        "saturation": 0,
+        "vibrance": 0
+      }
+    },
+    "overlay": {
+      "enabled": false,
+      "path": ""
+    },
+    "audioEffects": {
+      "fadeIn": 0.3,
+      "fadeOut": 0.3,
+      "normalize": true,
+      "compressor": {
+        "enabled": false,
+        "threshold": -12,
+        "ratio": 4
+      },
+      "eq": {
+        "enabled": false,
+        "bass": 0,
+        "mid": 0,
+        "treble": 0
+      }
+    }
+  },
+  {
+    "name": "Эпический",
+    "description": "Драматичный стиль для важных моментов",
+    "pitch": "-2",
+    "kenBurns": {
+      "type": "Complex Zoom",
+      "intensity": 40,
+      "curve": "ease-in-out",
+      "randomSeed": false
+    },
+    "transition": {
+      "type": "Film Burn",
+      "duration": 2.5,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": true,
+      "intensity": 70,
+      "feather": 60,
+      "roundness": 1.0
+    },
+    "colorFilter": {
+      "enabled": true,
+      "type": "Холодный",
+      "intensity": 80,
+      "lumetri": {
+        "temperature": -20,
+        "tint": -5,
+        "exposure": 0.5,
+        "contrast": 30,
+        "highlights": -10,
+        "shadows": 30,
+        "whites": 20,
+        "blacks": -20,
+        "saturation": 70,
+        "vibrance": 20
+      }
+    },
+    "overlay": {
+      "enabled": true,
+      "path": "overlays/light_leak.png"
+    },
+    "audioEffects": {
+      "fadeIn": 2.0,
+      "fadeOut": 2.0,
+      "normalize": true,
+      "compressor": {
+        "enabled": true,
+        "threshold": -6,
+        "ratio": 8
+      },
+      "eq": {
+        "enabled": true,
+        "bass": 8,
+        "mid": -2,
+        "treble": 5
+      },
+      "reverb": {
+        "enabled": true,
+        "roomSize": 0.8,
+        "wetLevel": 30
+      }
+    }
+  },
+  {
+    "name": "Социальные сети",
+    "description": "Оптимизирован для Instagram и TikTok",
+    "pitch": "-0.5",
+    "kenBurns": {
+      "type": "Zoom In",
+      "intensity": 25,
+      "curve": "ease-out",
+      "randomSeed": false
+    },
+    "transition": {
+      "type": "Glitch",
+      "duration": 0.3,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": true,
+      "intensity": 30,
+      "feather": 70,
+      "roundness": 1.0
+    },
+    "colorFilter": {
+      "enabled": true,
+      "type": "Теплый",
+      "intensity": 60,
+      "lumetri": {
+        "temperature": 15,
+        "tint": 5,
+        "exposure": 0.4,
+        "contrast": 15,
+        "highlights": 20,
+        "shadows": -15,
+        "whites": 10,
+        "blacks": -5,
+        "saturation": 130,
+        "vibrance": 40
+      }
+    },
+    "overlay": {
+      "enabled": false,
+      "path": ""
+    },
+    "audioEffects": {
+      "fadeIn": 0.1,
+      "fadeOut": 0.1,
+      "normalize": true,
+      "compressor": {
+        "enabled": true,
+        "threshold": -9,
+        "ratio": 5
+      },
+      "eq": {
+        "enabled": true,
+        "bass": 6,
+        "mid": 3,
+        "treble": 4
+      }
+    }
+  },
+  {
+    "name": "Мистический",
+    "description": "Загадочная атмосфера с эхо эффектами",
+    "pitch": "-1.5",
+    "kenBurns": {
+      "type": "Spiral",
+      "intensity": 35,
+      "curve": "ease-in",
+      "randomSeed": true
+    },
+    "transition": {
+      "type": "Light Leak",
+      "duration": 1.8,
+      "alignment": "center"
+    },
+    "vignette": {
+      "enabled": true,
+      "intensity": 85,
+      "feather": 35,
+      "roundness": 0.7
+    },
+    "colorFilter": {
+      "enabled": true,
+      "type": "Холодный",
+      "intensity": 90,
+      "lumetri": {
+        "temperature": -25,
+        "tint": -10,
+        "exposure": -0.3,
+        "contrast": 25,
+        "highlights": -40,
+        "shadows": 40,
+        "whites": -30,
+        "blacks": 20,
+        "saturation": 60,
+        "vibrance": -10
+      }
+    },
+    "overlay": {
+      "enabled": true,
+      "path": "overlays/fog.png"
+    },
+    "audioEffects": {
+      "fadeIn": 1.5,
+      "fadeOut": 2.0,
+      "normalize": true,
+      "compressor": {
+        "enabled": true,
+        "threshold": -10,
+        "ratio": 3
+      },
+      "eq": {
+        "enabled": true,
+        "bass": 2,
+        "mid": -4,
+        "treble": -2
+      },
+      "reverb": {
+        "enabled": true,
+        "roomSize": 0.9,
+        "wetLevel": 50
+      }
+    }
+  }
+]

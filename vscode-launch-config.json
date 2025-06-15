@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "extendscript-debug",
+      "request": "launch",
+      "name": "🟣 Run Auto Montage in Premiere 2022",
+      "program": "${workspaceFolder}/auto_montage_pro.jsx",
+      "stopOnEntry": false,
+      "targetSpecifier": "premierepro-22.0",
+      "engineName": "main",
+      "debugLevel": 1,
+      "excludes": ["node_modules/**", "*.min.js"]
+    },
+    {
+      "type": "extendscript-debug",
+      "request": "launch",
+      "name": "🟣 Debug Current File in Premiere 2022",
+      "program": "${file}",
+      "stopOnEntry": false,
+      "targetSpecifier": "premierepro-22.0",
+      "engineName": "main"
+    },
+    {
+      "type": "extendscript-debug",
+      "request": "launch",
+      "name": "🎬 Test in Media Encoder 2022",
+      "program": "${file}",
+      "stopOnEntry": false,
+      "targetSpecifier": "ame-22.0",
+      "engineName": "main"
+    }
+  ]
+}
