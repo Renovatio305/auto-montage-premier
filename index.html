@@ -3131,10 +3131,7 @@
                     }
                     
                     try {
-<<<<<<< HEAD
 											
-=======
->>>>>>> 5adb8a335390beae31960bdd51844c4147e887e1
                         // Создаем секвенцию
                         var sequenceName = "Montage_" + config.channelName + "_" + new Date().getTime();
                         
@@ -3176,7 +3173,6 @@
                     return ""; // По умолчанию
                 }
                 
-<<<<<<< HEAD
 				function buildMontageSequence(sequence, config) {
 					try {
 						alert("Effects: " + (config.effects ? "есть" : "нет") + 
@@ -3352,78 +3348,6 @@
 						return {success: false, error: e.toString()};
 					}
 				}                
-=======
-                function buildMontageSequence(sequence, config) {
-                    try {
-                        var videoTrack = sequence.videoTracks[0];
-                        var audioTrack = sequence.audioTracks[0];
-                        
-                        if (!videoTrack || !audioTrack) {
-                            return {success: false, error: "Не удалось получить доступ к трекам"};
-                        }
-                        
-                        var currentTime = 0;
-                        var clipsAdded = 0;
-                        var previousClip = null;
-                        
-                        // Обрабатываем каждую пару файлов
-                        for (var i = 0; i < config.pairs.length; i++) {
-                            var pair = config.pairs[i];
-                            
-                            // Находим медиа файл в проекте
-                            var mediaItem = findProjectItem(pair.mediaFile.name);
-                            var audioItem = findAudioVariant(pair.audioFile.name, config);
-                            
-                            if (!mediaItem || !audioItem) {
-                                $.writeln("Пропускаем пару " + pair.number + ": файлы не найдены в проекте");
-                                continue;
-                            }
-                            
-                            // Добавляем на таймлайн
-                            var videoClip = videoTrack.insertClip(mediaItem, currentTime);
-                            var audioClip = audioTrack.insertClip(audioItem, currentTime);
-                            
-                            if (!videoClip || !audioClip) {
-                                continue;
-                            }
-                            
-                            // Синхронизируем длительность
-                            var audioDuration = audioClip.duration.seconds;
-                            
-                            // Для видео файлов - обрабатываем зацикливание
-                            if (pair.mediaType === 'video' && videoClip.duration.seconds < audioDuration) {
-                                handleVideoLooping(videoClip, audioDuration, videoTrack, currentTime);
-                            } else {
-                                // Для изображений или длинных видео - просто устанавливаем длительность
-                                videoClip.end = videoClip.start + audioDuration;
-                            }
-                            
-                            // Применяем эффекты
-                            applyClipEffects(videoClip, config, i);
-                            
-                            // Добавляем переход если есть предыдущий клип
-                            if (previousClip && config.effects.transitions && config.effects.transitions.length > 0) {
-                                addTransition(previousClip, videoClip, config.effects);
-                            }
-                            
-                            previousClip = videoClip;
-                            currentTime += audioDuration;
-                            clipsAdded++;
-                        }
-                        
-                        // Добавляем оверлеи если нужно
-                        if (config.overlays && config.overlays.enabled && config.overlays.files.length > 0) {
-                            addOverlays(sequence, config.overlays, currentTime);
-                        }
-                        
-                        return {success: true, clipsAdded: clipsAdded};
-                        
-                    } catch(e) {
-                        return {success: false, error: "buildMontageSequence: " + e.toString()};
-                    }
-                }
-                
->>>>>>> 5adb8a335390beae31960bdd51844c4147e887e1
                 function findProjectItem(fileName) {
                     // Рекурсивный поиск элемента в проекте
                     function searchInBin(bin, name) {
@@ -3463,14 +3387,11 @@
                     var clipDuration = videoClip.duration.seconds;
                     var currentTime = startTime;
                     var sourceItem = videoClip.projectItem;
-<<<<<<< HEAD
 						// Сбрасываем In/Out для зацикливания
 						try {
 							sourceItem.clearInPoint();
 							sourceItem.clearOutPoint();
 						} catch(e) {}					
-=======
->>>>>>> 5adb8a335390beae31960bdd51844c4147e887e1
                     
                     // Устанавливаем длительность первого клипа
                     videoClip.end = videoClip.start + Math.min(clipDuration, targetDuration);
@@ -3501,7 +3422,6 @@
                     }
                 }
                 
-<<<<<<< HEAD
 				function applyClipEffects(clip, effects, clipIndex) {
 					try {
 						$.writeln("=== НАЧАЛО applyClipEffects для клипа " + (clipIndex + 1) + " ===");
@@ -3535,45 +3455,40 @@
 
 				function applyKenBurnsEffect(clip, effects, clipIndex) {
 					try {
-						$.writeln("=== ДИАГНОСТИКА KEN BURNS ===");
+						alert("=== ДИАГНОСТИКА KEN BURNS ===");
 						
 						// Проверяем clip
-						$.writeln("Clip существует: " + (clip ? "ДА" : "НЕТ"));
+						alert("Clip существует: " + (clip ? "ДА" : "НЕТ"));
 						if (!clip) return;
 						
-						$.writeln("Количество компонентов: " + clip.components.numItems);
+						alert("Количество компонентов: " + clip.components.numItems);
 						
-						// Перебираем все компоненты
-						for (var i = 0; i < clip.components.numItems; i++) {
+						// Проверяем первые 3 компонента
+						for (var i = 0; i < 3 && i < clip.components.numItems; i++) {
 							var comp = clip.components[i];
-							$.writeln("Компонент[" + i + "]: " + comp.displayName);
+							alert("Компонент[" + i + "]: " + comp.displayName);
 						}
 						
 						// Проверяем Motion компонент
 						var motionComponent = clip.components[1];
 						if (motionComponent) {
-							$.writeln("Motion найден: " + motionComponent.displayName);
-							$.writeln("Количество properties: " + motionComponent.properties.numItems);
+							alert("Motion найден: " + motionComponent.displayName);
+							alert("Количество properties: " + motionComponent.properties.numItems);
 							
-							// Перебираем все свойства Motion
-							for (var p = 0; p < motionComponent.properties.numItems; p++) {
+							// Проверяем первые 3 свойства
+							for (var p = 0; p < 3 && p < motionComponent.properties.numItems; p++) {
 								var prop = motionComponent.properties[p];
-								$.writeln("Property[" + p + "]: " + prop.displayName);
+								alert("Property[" + p + "]: " + prop.displayName);
 								
-								// Проверяем доступные методы
-								$.writeln("  - isTimeVarying: " + (typeof prop.isTimeVarying === 'function' ? "ЕСТЬ" : "НЕТ"));
-								$.writeln("  - setTimeVarying: " + (typeof prop.setTimeVarying === 'function' ? "ЕСТЬ" : "НЕТ"));
-								$.writeln("  - addKey: " + (typeof prop.addKey === 'function' ? "ЕСТЬ" : "НЕТ"));
-								$.writeln("  - setValueAtKey: " + (typeof prop.setValueAtKey === 'function' ? "ЕСТЬ" : "НЕТ"));
-								$.writeln("  - setValue: " + (typeof prop.setValue === 'function' ? "ЕСТЬ" : "НЕТ"));
-								$.writeln("  - getValue: " + (typeof prop.getValue === 'function' ? "ЕСТЬ" : "НЕТ"));
+								// Проверяем один ключевой метод
+								alert("addKey доступен: " + (typeof prop.addKey === 'function' ? "ДА" : "НЕТ"));
 							}
 						} else {
-							$.writeln("Motion компонент НЕ НАЙДЕН на позиции 1");
+							alert("Motion компонент НЕ НАЙДЕН на позиции 1");
 						}
 						
 					} catch(e) {
-						$.writeln("ОШИБКА в диагностике: " + e.toString());
+						alert("ОШИБКА в диагностике: " + e.toString());
 					}
 				}
 
@@ -3621,444 +3536,6 @@
 					}
 				}
                
-=======
-                function applyClipEffects(clip, config, clipIndex) {
-                    if (!clip || !clip.isValid()) return;
-                    
-                    var effects = config.effects;
-                    
-                    // Ken Burns эффекты
-                    if (effects.kenBurns && effects.kenBurns.length > 0) {
-                        applyKenBurns(clip, effects, clipIndex);
-                    }
-                    
-                    // CapCut эффекты
-                    if (effects.capcutEffects && effects.capcutEffects.length > 0) {
-                        applyCapcutEffects(clip, effects, clipIndex);
-                    }
-                    
-                    // Цветокоррекция
-                    if (effects.colorCorrection) {
-                        applyColorCorrection(clip, effects);
-                    }
-                    
-                    // 3D эффекты
-                    if (effects.enable3D) {
-                        apply3DEffects(clip, effects);
-                    }
-                }
-                
-                function applyKenBurns(clip, effects, clipIndex) {
-                    var motionEffect = null;
-                    
-                    // Ищем Motion эффект
-                    for (var i = 0; i < clip.components.numItems; i++) {
-                        if (clip.components[i].displayName === "Motion") {
-                            motionEffect = clip.components[i];
-                            break;
-                        }
-                    }
-                    
-                    if (!motionEffect) return;
-                    
-                    // Выбираем эффект
-                    var selectedEffect = effects.kbRandomize ? 
-                        effects.kenBurns[Math.floor(Math.random() * effects.kenBurns.length)] :
-                        effects.kenBurns[clipIndex % effects.kenBurns.length];
-                    
-                    var intensity = effects.kenBurnsIntensity / 100;
-                    var startTime = clip.inPoint.seconds;
-                    var endTime = clip.outPoint.seconds;
-                    
-                    // Получаем параметры
-                    var scaleParam = motionEffect.properties.getParamForDisplayName("Scale");
-                    var positionParam = motionEffect.properties.getParamForDisplayName("Position");
-                    var rotationParam = motionEffect.properties.getParamForDisplayName("Rotation");
-                    
-                    // Умная обрезка - увеличиваем начальный масштаб для компенсации
-                    var cropCompensation = effects.smartCrop ? 1.1 : 1.0;
-                    
-                    switch(selectedEffect) {
-                        case 'zoomIn':
-                            if (scaleParam) {
-                                scaleParam.addKey(startTime);
-                                scaleParam.setValueAtKey(startTime, 100 * cropCompensation);
-                                scaleParam.addKey(endTime);
-                                scaleParam.setValueAtKey(endTime, (100 + 30 * intensity) * cropCompensation);
-                            }
-                            break;
-                            
-                        case 'zoomOut':
-                            if (scaleParam) {
-                                scaleParam.addKey(startTime);
-                                scaleParam.setValueAtKey(startTime, (100 + 30 * intensity) * cropCompensation);
-                                scaleParam.addKey(endTime);
-                                scaleParam.setValueAtKey(endTime, 100 * cropCompensation);
-                            }
-                            break;
-                            
-                        case 'panLeft':
-                        case 'panRight':
-                        case 'panUp':
-                        case 'panDown':
-                            if (positionParam && scaleParam) {
-                                // Увеличиваем масштаб для умной обрезки
-                                scaleParam.setValue(110 * cropCompensation);
-                                
-                                var direction = selectedEffect.replace('pan', '').toLowerCase();
-                                var moveAmount = 0.1 * intensity;
-                                
-                                positionParam.addKey(startTime);
-                                positionParam.addKey(endTime);
-                                
-                                var startPos = [0.5, 0.5];
-                                var endPos = [0.5, 0.5];
-                                
-                                if (direction === 'left') endPos[0] -= moveAmount;
-                                else if (direction === 'right') endPos[0] += moveAmount;
-                                else if (direction === 'up') endPos[1] -= moveAmount;
-                                else if (direction === 'down') endPos[1] += moveAmount;
-                                
-                                positionParam.setValueAtKey(startTime, startPos);
-                                positionParam.setValueAtKey(endTime, endPos);
-                            }
-                            break;
-                            
-                        case 'rotate':
-                            if (rotationParam && scaleParam) {
-                                // Увеличиваем масштаб еще больше для компенсации углов
-                                var rotationScale = 1 + (effects.rotationAngle / 90);
-                                scaleParam.setValue(100 * cropCompensation * rotationScale);
-                                
-                                rotationParam.addKey(startTime);
-                                rotationParam.setValueAtKey(startTime, -effects.rotationAngle / 2);
-                                rotationParam.addKey(endTime);
-                                rotationParam.setValueAtKey(endTime, effects.rotationAngle / 2);
-                            }
-                            break;
-                            
-                        case 'diagonal':
-                            if (positionParam && scaleParam) {
-                                scaleParam.setValue(120 * cropCompensation);
-                                
-                                positionParam.addKey(startTime);
-                                positionParam.setValueAtKey(startTime, [0.4, 0.4]);
-                                positionParam.addKey(endTime);
-                                positionParam.setValueAtKey(endTime, [0.6, 0.6]);
-                            }
-                            break;
-                    }
-                    
-                    // Применяем интерполяцию
-                    applyEasing(motionEffect, effects.easingType, effects.bezierP1, effects.bezierP2);
-                }
-                
-                function applyCapcutEffects(clip, effects, clipIndex) {
-                    // Проверяем нужно ли применять эффект к этому клипу
-                    if (!shouldApplyEffect(clipIndex, effects)) return;
-                    
-                    var motionEffect = null;
-                    for (var i = 0; i < clip.components.numItems; i++) {
-                        if (clip.components[i].displayName === "Motion") {
-                            motionEffect = clip.components[i];
-                            break;
-                        }
-                    }
-                    
-                    if (!motionEffect) return;
-                    
-                    var scaleParam = motionEffect.properties.getParamForDisplayName("Scale");
-                    var positionParam = motionEffect.properties.getParamForDisplayName("Position");
-                    var rotationParam = motionEffect.properties.getParamForDisplayName("Rotation");
-                    
-                    var startTime = clip.inPoint.seconds;
-                    var endTime = clip.outPoint.seconds;
-                    var duration = endTime - startTime;
-                    
-                    // Выбираем случайный эффект
-                    var allEffects = effects.capcutEffects.concat(effects.motionEffects || []);
-                    var selectedEffect = allEffects[Math.floor(Math.random() * allEffects.length)];
-                    
-                    switch(selectedEffect) {
-                        case 'zoomBurst':
-                            if (scaleParam) {
-                                var burstDuration = duration * 0.2; // 20% времени на burst
-                                var startScale = effects.zoomBurstStart || 150;
-                                var decay = (effects.zoomBurstDecay || 80) / 100;
-                                
-                                // Быстрый зум в начале
-                                scaleParam.addKey(startTime);
-                                scaleParam.setValueAtKey(startTime, startScale);
-                                
-                                // Точка затухания
-                                scaleParam.addKey(startTime + burstDuration);
-                                scaleParam.setValueAtKey(startTime + burstDuration, 100 + (startScale - 100) * (1 - decay));
-                                
-                                // Медленное движение до конца
-                                scaleParam.addKey(endTime);
-                                scaleParam.setValueAtKey(endTime, 100);
-                                
-                                // Применяем кривую для первого участка
-                                setKeyframeInterpolation(scaleParam, 0, 'ease-out');
-                                setKeyframeInterpolation(scaleParam, 1, 'linear');
-                            }
-                            break;
-                            
-                        case 'pulse':
-                            if (scaleParam) {
-                                var amplitude = effects.scaleAmplitude / 100;
-                                var pulseCount = Math.floor(duration * 2); // 2 пульсации в секунду
-                                
-                                for (var p = 0; p <= pulseCount; p++) {
-                                    var time = startTime + (duration * p / pulseCount);
-                                    scaleParam.addKey(time);
-                                    
-                                    // Чередуем масштаб
-                                    var scale = p % 2 === 0 ? 100 : 100 + (20 * amplitude);
-                                    scaleParam.setValueAtKey(time, scale);
-                                }
-                            }
-                            break;
-                            
-                        case 'bounce':
-                            if (scaleParam) {
-                                var bounceHeight = effects.scaleAmplitude / 100;
-                                var bounces = 3;
-                                
-                                scaleParam.addKey(startTime);
-                                scaleParam.setValueAtKey(startTime, 100);
-                                
-                                for (var b = 1; b <= bounces; b++) {
-                                    var bounceTime = startTime + (duration * b / (bounces + 1));
-                                    var bounceScale = 100 + (30 * bounceHeight * (1 - b/bounces));
-                                    
-                                    scaleParam.addKey(bounceTime - 0.1);
-                                    scaleParam.setValueAtKey(bounceTime - 0.1, bounceScale);
-                                    
-                                    scaleParam.addKey(bounceTime);
-                                    scaleParam.setValueAtKey(bounceTime, 100);
-                                }
-                            }
-                            break;
-                            
-                        case 'shake':
-                            if (positionParam) {
-                                var intensity = effects.motionIntensity / 1000;
-                                var shakeFrames = 10;
-                                
-                                for (var s = 0; s < shakeFrames; s++) {
-                                    var shakeTime = startTime + (duration * s / shakeFrames);
-                                    var offsetX = (Math.random() - 0.5) * intensity;
-                                    var offsetY = (Math.random() - 0.5) * intensity;
-                                    
-                                    positionParam.addKey(shakeTime);
-                                    positionParam.setValueAtKey(shakeTime, [0.5 + offsetX, 0.5 + offsetY]);
-                                }
-                            }
-                            break;
-                            
-                        case 'wobble':
-                            if (rotationParam) {
-                                var wobbleAngle = effects.motionIntensity / 10;
-                                var wobbleCount = Math.floor(duration * 3);
-                                
-                                for (var w = 0; w <= wobbleCount; w++) {
-                                    var wobbleTime = startTime + (duration * w / wobbleCount);
-                                    var angle = Math.sin(w * Math.PI) * wobbleAngle;
-                                    
-                                    rotationParam.addKey(wobbleTime);
-                                    rotationParam.setValueAtKey(wobbleTime, angle);
-                                }
-                            }
-                            break;
-                            
-                        case 'pendulum':
-                            if (rotationParam) {
-                                var swingAngle = effects.motionIntensity / 5;
-                                
-                                rotationParam.addKey(startTime);
-                                rotationParam.setValueAtKey(startTime, -swingAngle);
-                                
-                                rotationParam.addKey(startTime + duration/2);
-                                rotationParam.setValueAtKey(startTime + duration/2, swingAngle);
-                                
-                                rotationParam.addKey(endTime);
-                                rotationParam.setValueAtKey(endTime, -swingAngle);
-                                
-                                // Применяем ease-in-out для плавности
-                                setKeyframeInterpolation(rotationParam, 0, 'ease-in-out');
-                                setKeyframeInterpolation(rotationParam, 1, 'ease-in-out');
-                            }
-                            break;
-                    }
-                }
-                
-                function shouldApplyEffect(clipIndex, effects) {
-                    var frequency = effects.effectFrequency || 'all';
-                    
-                    if (frequency === 'all') return true;
-                    
-                    if (frequency === 'percent') {
-                        var percent = effects.effectPercent || 50;
-                        return Math.random() * 100 < percent;
-                    }
-                    
-                    if (frequency === 'every') {
-                        var every = effects.effectEvery || 3;
-                        return clipIndex % every === 0;
-                    }
-                    
-                    if (frequency === 'random') {
-                        return Math.random() > 0.5;
-                    }
-                    
-                    return false;
-                }
-                
-                function applyColorCorrection(clip, effects) {
-                    // Находим или добавляем Lumetri Color
-                    var lumetriEffect = null;
-                    
-                    for (var i = 0; i < clip.components.numItems; i++) {
-                        if (clip.components[i].displayName === "Lumetri Color") {
-                            lumetriEffect = clip.components[i];
-                            break;
-                        }
-                    }
-                    
-                    if (!lumetriEffect) {
-                        // Добавляем эффект
-                        var videoEffects = app.project.rootItem.getVideoEffectByName("Lumetri Color");
-                        if (videoEffects) {
-                            clip.addVideoEffect(videoEffects);
-                            
-                            // Находим добавленный эффект
-                            for (var j = 0; j < clip.components.numItems; j++) {
-                                if (clip.components[j].displayName === "Lumetri Color") {
-                                    lumetriEffect = clip.components[j];
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    if (!lumetriEffect || !lumetriEffect.properties) return;
-                    
-                    // Применяем настройки цветового фильтра
-                    var filterPresets = {
-                        'warm': {temperature: 20, tint: 5, saturation: 110},
-                        'cold': {temperature: -20, tint: -5, saturation: 90},
-                        'vintage': {temperature: 10, tint: 10, saturation: 80, fadeAmount: 10},
-                        'blackwhite': {saturation: 0},
-                        'sepia': {temperature: 30, tint: 15, saturation: 50},
-                        'cinematic': {temperature: -10, contrast: 110, highlights: -20, shadows: 20, saturation: 95},
-                        'vibrant': {vibrance: 130, saturation: 120},
-                        'faded': {fadeAmount: 15, contrast: 90, saturation: 85}
-                    };
-                    
-                    var preset = filterPresets[effects.colorFilter];
-                    if (preset) {
-                        for (var param in preset) {
-                            setLumetriParam(lumetriEffect, param, preset[param]);
-                        }
-                    }
-                    
-                    // Виньетка
-                    if (effects.vignette) {
-                        var vignetteAmount = -(effects.vignetteIntensity / 100) * 2;
-                        setLumetriParam(lumetriEffect, "vignetteAmount", vignetteAmount);
-                    }
-                    
-                    // Зерно
-                    if (effects.grain) {
-                        // Добавляем эффект Noise
-                        var noiseEffect = app.project.rootItem.getVideoEffectByName("Noise");
-                        if (noiseEffect) {
-                            clip.addVideoEffect(noiseEffect);
-                            
-                            // Настраиваем интенсивность
-                            for (var k = 0; k < clip.components.numItems; k++) {
-                                if (clip.components[k].displayName === "Noise") {
-                                    var noiseComp = clip.components[k];
-                                    var amountParam = noiseComp.properties.getParamForDisplayName("Amount of Noise");
-                                    if (amountParam) {
-                                        amountParam.setValue(effects.grainIntensity / 100 * 10);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                function setLumetriParam(lumetriEffect, paramName, value) {
-                    var properties = lumetriEffect.properties;
-                    
-                    // Маппинг имен параметров
-                    var paramMap = {
-                        'temperature': 'Temperature',
-                        'tint': 'Tint',
-                        'exposure': 'Exposure',
-                        'contrast': 'Contrast',
-                        'highlights': 'Highlights',
-                        'shadows': 'Shadows',
-                        'whites': 'Whites',
-                        'blacks': 'Blacks',
-                        'saturation': 'Saturation',
-                        'vibrance': 'Vibrance',
-                        'fadeAmount': 'Faded Film Amount',
-                        'vignetteAmount': 'Vignette Amount'
-                    };
-                    
-                    var displayName = paramMap[paramName];
-                    if (!displayName) return;
-                    
-                    var param = properties.getParamForDisplayName(displayName);
-                    if (param && !param.isTimeVarying()) {
-                        param.setValue(value);
-                    }
-                }
-                
-                function apply3DEffects(clip, effects) {
-                    if (effects.type3D === 'basic') {
-                        // Используем Basic 3D эффект
-                        var basic3D = app.project.rootItem.getVideoEffectByName("Basic 3D");
-                        if (basic3D) {
-                            clip.addVideoEffect(basic3D);
-                            
-                            // Находим добавленный эффект
-                            for (var i = 0; i < clip.components.numItems; i++) {
-                                if (clip.components[i].displayName === "Basic 3D") {
-                                    var effect3D = clip.components[i];
-                                    var intensity = effects.intensity3D / 100;
-                                    
-                                    // Анимируем поворот
-                                    var tiltParam = effect3D.properties.getParamForDisplayName("Tilt");
-                                    var swivelParam = effect3D.properties.getParamForDisplayName("Swivel");
-                                    
-                                    if (tiltParam && swivelParam) {
-                                        var startTime = clip.inPoint.seconds;
-                                        var endTime = clip.outPoint.seconds;
-                                        
-                                        if (effects.autoRotate3D) {
-                                            // Автовращение
-                                            swivelParam.addKey(startTime);
-                                            swivelParam.setValueAtKey(startTime, -10 * intensity);
-                                            swivelParam.addKey(endTime);
-                                            swivelParam.setValueAtKey(endTime, 10 * intensity);
-                                        } else {
-                                            // Статичный 3D
-                                            tiltParam.setValue(5 * intensity);
-                                            swivelParam.setValue(8 * intensity);
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
->>>>>>> 5adb8a335390beae31960bdd51844c4147e887e1
                 
                 function addTransition(clip1, clip2, effects) {
                     var track = clip1.parentTrack;
@@ -4996,7 +4473,4 @@
         }
     </script>
 </body>
-
 </html>
-
-
