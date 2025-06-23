@@ -1,0 +1,34 @@
+{
+  "ffmpegPath": "ffmpeg.exe",
+  "amePath": "C:/Program Files/Adobe/Adobe Media Encoder 2023/Adobe Media Encoder.exe",
+  "threads": 4,
+  "useCache": true,
+  "autoSave": true,
+  "createProxy": false,
+  "defaultExportSettings": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "bitrate": 8000,
+    "audioSampleRate": 48000,
+    "audioBitrate": 192
+  },
+  "paths": {
+    "overlays": "overlays/",
+    "exports": "exports/",
+    "cache": "cache/",
+    "temp": "temp/"
+  },
+  "performance": {
+    "maxRAMUsage": 8192,
+    "enableGPU": true,
+    "multiThreading": true,
+    "renderQuality": "high"
+  },
+  "ui": {
+    "theme": "dark",
+    "language": "ru",
+    "showTooltips": true,
+    "autoUpdatePreview": false
+  }
+}

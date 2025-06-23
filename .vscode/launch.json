@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "extendscript-debug",
+      "request": "launch",
+      "name": "Run Auto Montage in Premiere 2023",
+      "program": "${workspaceFolder}/auto_montage_gui_FINAL.jsx",
+      "stopOnEntry": false,
+      "targetSpecifier": "premierepro-23.0",
+      "engineName": "main"
+    },
+    {
+      "type": "extendscript-debug",
+      "request": "launch",
+      "name": "Test Installation",
+      "program": "${workspaceFolder}/test_installation.jsx",
+      "stopOnEntry": false,
+      "targetSpecifier": "premierepro-23.0",
+      "engineName": "main"
+    },
+    {
+      "type": "extendscript-debug",
+      "request": "launch",
+      "name": "Debug Current File",
+      "program": "${file}",
+      "stopOnEntry": false,
+      "targetSpecifier": "premierepro-23.0",
+      "engineName": "main"
+    }
+  ]
+}
