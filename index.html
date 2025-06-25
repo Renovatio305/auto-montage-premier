@@ -3254,6 +3254,14 @@
 								if (videoClip) {
 									$.writeln("Видео клип добавлен с длительностью: " + videoClip.duration.seconds);
 									
+									// === ПРИМЕНЯЕМ KEN BURNS ЭФФЕКТ ===
+									if (config.effects && config.effects.kenBurns && config.effects.kenBurns.length > 0) {
+										alert("Применяем Ken Burns к основному клипу " + (i+1));
+										applyKenBurnsEffect(videoClip, config.effects, i);
+									} else {
+										alert("Ken Burns эффекты не настроены!");
+									}									
+									
 									// Исправляем масштаб если он нулевой
 									try {
 										for (var c = 0; c < videoClip.components.numItems; c++) {
@@ -3422,75 +3430,609 @@
                     }
                 }
                 
-				function applyClipEffects(clip, effects, clipIndex) {
+				function applyKenBurnsEffect(clip, effects, clipIndex) {
 					try {
-						$.writeln("=== НАЧАЛО applyClipEffects для клипа " + (clipIndex + 1) + " ===");
+						alert("ФИНАЛЬНАЯ ПОПЫТКА - TRANSFORM ЭФФЕКТ");
 						
-						if (!clip) {
-							$.writeln("Клип не найден");
+						if (!clip || !effects.kenBurns || effects.kenBurns.length === 0) {
 							return;
 						}
 						
-						// Применяем Ken Burns эффекты (используют встроенный Motion)
-						if (effects.kenBurns && effects.kenBurns.length > 0) {
-							applyKenBurnsEffect(clip, effects, clipIndex);
+						// ИЩЕМ TRANSFORM ЭФФЕКТ (НЕ MOTION!)
+						var transformComponent = null;
+						for (var i = 0; i < clip.components.numItems; i++) {
+							var component = clip.components[i];
+							if (component.displayName === "Transform" || component.displayName === "Преобразование") {
+								transformComponent = component;
+								alert("Transform эффект найден!");
+								break;
+							}
 						}
 						
-						// Применяем CapCut эффекты (если они настроены)
-						if (effects.capcutEffects && effects.capcutEffects.length > 0) {
-							applyCapcutEffects(clip, effects, clipIndex);
+						// Если нет Transform, добавляем его
+						if (!transformComponent) {
+							alert("Добавляем Transform эффект через QE");
+							
+							try {
+								app.enableQE();
+								var qeSequence = qe.project.getActiveSequence();
+								var qeClip = qeSequence.getVideoTrackAt(0).getItemAt(clipIndex);
+								
+								// Добавляем Transform эффект
+								var transformEffect = qe.project.getVideoEffectByName("Transform");
+								if (transformEffect) {
+									qeClip.addVideoEffect(transformEffect);
+									alert("Transform добавлен через QE");
+									
+									// Обновляем ссылку на компонент
+									for (var j = 0; j < clip.components.numItems; j++) {
+										if (clip.components[j].displayName === "Transform") {
+											transformComponent = clip.components[j];
+											break;
+										}
+									}
+								}
+							} catch(e) {
+								alert("QE Transform ошибка: " + e.toString());
+								return;
+							}
 						}
 						
-						// Применяем цветокоррекцию через QE API
-						if (effects.colorCorrection) {
-							applyColorCorrectionQE(clip, effects);
+						if (!transformComponent) {
+							alert("Transform эффект недоступен");
+							return;
 						}
 						
-						$.writeln("=== КОНЕЦ applyClipEffects ===");
+						// РАБОТАЕМ С TRANSFORM SCALE (НЕ MOTION!)
+						var scaleParam = null;
+						for (var k = 0; k < transformComponent.properties.numItems; k++) {
+							var prop = transformComponent.properties[k];
+							if (prop.displayName.toLowerCase().indexOf("scale") > -1) {
+								scaleParam = prop;
+								alert("Transform Scale найден: " + prop.displayName);
+								break;
+							}
+						}
+						
+						if (!scaleParam) {
+							alert("Transform Scale не найден");
+							return;
+						}
+						
+						var effectType = effects.kenBurns[0];
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = clip.duration.seconds;
+						
+						if (effectType === 'zoomIn') {
+							var startScale = 100 + (intensity * 30);
+							var endScale = 100;
+							
+							alert("Transform Ken Burns: " + startScale + "% -> " + endScale + "%");
+							
+							try {
+								// Активируем анимацию для Transform Scale
+								if (!scaleParam.isTimeVarying()) {
+									scaleParam.setTimeVarying(true);
+									alert("Transform анимация активирована");
+								}
+								
+								// Добавляем ключи
+								scaleParam.addKey(0);
+								scaleParam.addKey(duration);
+								
+								// Устанавливаем значения
+								scaleParam.setValueAtKey(0, startScale, true);
+								scaleParam.setValueAtKey(duration, endScale, true);
+								
+								alert("🎬 TRANSFORM KEN BURNS СОЗДАН!");
+								
+								// Проверяем результат
+								var keys = scaleParam.getKeys();
+								alert("Transform ключи: " + keys.length);
+								
+							} catch(e) {
+								alert("Transform анимация ошибка: " + e.toString());
+							}
+						}
 						
 					} catch(e) {
-						$.writeln("ОШИБКА в applyClipEffects: " + e.toString());
+						alert("КРИТИЧЕСКАЯ ОШИБКА: " + e.toString());
+					}
+				}
+				function applyKenBurnsToTransform(transformEffect, effects, clipIndex, clip) {
+					try {
+						alert("Работаем с Transform эффектом");
+						
+						// Ищем Scale параметр в Transform
+						var scaleParam = null;
+						for (var i = 0; i < transformEffect.properties.numItems; i++) {
+							var prop = transformEffect.properties[i];
+							var name = prop.displayName.toLowerCase();
+							
+							if (name.indexOf("scale") > -1 || name.indexOf("масштаб") > -1) {
+								scaleParam = prop;
+								alert("Transform Scale найден: " + prop.displayName);
+								break;
+							}
+						}
+						
+						if (!scaleParam) {
+							alert("Scale в Transform не найден");
+							return;
+						}
+						
+						var effectType = effects.kbRandomize ? 
+							effects.kenBurns[Math.floor(Math.random() * effects.kenBurns.length)] :
+							effects.kenBurns[clipIndex % effects.kenBurns.length];
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = clip.duration.seconds;
+						
+						if (effectType === 'zoomIn') {
+							var startScale = 100 + (intensity * 30);
+							var endScale = 100;
+							
+							alert("Transform Zoom: " + startScale + "% -> " + endScale + "%");
+							
+							// Активируем анимацию для Transform Scale
+							try {
+								// Устанавливаем начальное значение
+								scaleParam.setValue(startScale);
+								alert("Transform: начальное значение установлено");
+								
+								// Пробуем добавить ключевой кадр в конце
+								if (typeof scaleParam.addKey === 'function') {
+									var endKey = scaleParam.addKey(duration);
+									alert("Transform: конечный ключ добавлен");
+									
+									// Устанавливаем значение конечного ключа
+									if (typeof scaleParam.setValueAtKey === 'function') {
+										scaleParam.setValueAtKey(endKey, endScale);
+										alert("Transform: конечное значение установлено");
+									}
+								}
+								
+							} catch(e) {
+								alert("Transform ключевые кадры ошибка: " + e.toString());
+							}
+						}
+						
+						alert("Transform Ken Burns завершен");
+						
+					} catch(e) {
+						alert("Transform обработка ошибка: " + e.toString());
+					}
+				}
+				function applyKenBurnsQE(qeClip, effects, clipIndex) {
+					try {
+						var effectType = effects.kbRandomize ? 
+							effects.kenBurns[Math.floor(Math.random() * effects.kenBurns.length)] :
+							effects.kenBurns[clipIndex % effects.kenBurns.length];
+						
+						alert("QE: Применяем " + effectType);
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = qeClip.duration.seconds;
+						
+						if (effectType === 'zoomIn') {
+							var startScale = 100 + (intensity * 30);
+							var endScale = 100;
+							
+							alert("QE Zoom In: " + startScale + "% -> " + endScale + "%");
+							
+							// Устанавливаем ключевые кадры через QE
+							try {
+								qeClip.setScaleAtTime(0, startScale, startScale);
+								alert("QE: Начальный кадр установлен");
+								
+								qeClip.setScaleAtTime(duration, endScale, endScale);
+								alert("QE: Конечный кадр установлен");
+								
+							} catch(e) {
+								alert("QE setScaleAtTime ошибка: " + e.toString());
+								
+								// Альтернативный способ через компоненты QE
+								try {
+									var motionComponent = qeClip.getComponent("Motion");
+									if (motionComponent) {
+										alert("QE Motion компонент найден");
+										
+										var scaleParam = motionComponent.getProperty("Scale");
+										if (scaleParam) {
+											alert("QE Scale параметр найден");
+											
+											scaleParam.setValueAtTime(0, startScale);
+											scaleParam.setValueAtTime(duration, endScale);
+											
+											alert("QE: Кадры установлены через компонент");
+										}
+									}
+								} catch(e2) {
+									alert("QE компоненты ошибка: " + e2.toString());
+								}
+							}
+						}
+						
+						alert("QE Ken Burns завершен");
+						
+					} catch(e) {
+						alert("QE applyKenBurnsQE ошибка: " + e.toString());
+					}
+				}
+				
+				
+				// ПОИСК MOTION КОМПОНЕНТА
+				function findMotionComponent(clip) {
+					try {
+						alert("findMotionComponent: начинаем поиск. Компонентов: " + clip.components.numItems);
+						
+						for (var i = 0; i < clip.components.numItems; i++) {
+							var component = clip.components[i];
+							var name = component.displayName;
+							alert("Компонент " + i + ": " + name);
+							
+							if (name === "Motion" || 
+								name === "Движение" ||
+								name.indexOf("Transform") > -1 ||
+								component.matchName === "AE.ADBE Transform Group") {
+								alert("НАЙДЕН Motion компонент: " + name);
+								return component;
+							}
+						}
+						
+						if (clip.components.numItems > 0) {
+							alert("Используем первый компонент: " + clip.components[0].displayName);
+							return clip.components[0];
+						}
+						
+						alert("НЕТ компонентов вообще!");
+						return null;
+						
+					} catch(e) {
+						alert("ОШИБКА в findMotionComponent: " + e.toString());
+						return null;
 					}
 				}
 
-				function applyKenBurnsEffect(clip, effects, clipIndex) {
+				// ПОЛУЧЕНИЕ ПАРАМЕТРОВ MOTION
+				function getMotionParameters(motionComponent) {
+					var params = {
+						scale: null,
+						position: null,
+						rotation: null
+					};
+					
 					try {
-						alert("=== ДИАГНОСТИКА KEN BURNS ===");
+						alert("Ищем параметры Motion. Всего: " + motionComponent.properties.numItems);
 						
-						// Проверяем clip
-						alert("Clip существует: " + (clip ? "ДА" : "НЕТ"));
-						if (!clip) return;
-						
-						alert("Количество компонентов: " + clip.components.numItems);
-						
-						// Проверяем первые 3 компонента
-						for (var i = 0; i < 3 && i < clip.components.numItems; i++) {
-							var comp = clip.components[i];
-							alert("Компонент[" + i + "]: " + comp.displayName);
+						// Показываем ВСЕ параметры
+						for (var i = 0; i < motionComponent.properties.numItems; i++) {
+							var prop = motionComponent.properties[i];
+							var name = prop.displayName;
+							
+							try {
+								var value = prop.getValue();
+								alert("Параметр " + i + ": " + name + " = " + value + " (тип: " + typeof value + ")");
+							} catch(e) {
+								alert("Параметр " + i + ": " + name + " (ошибка получения значения)");
+							}
+							
+							var lowerName = name.toLowerCase();
+							
+							// Ищем масштаб по разным именам
+							if (lowerName.indexOf("scale") > -1 || 
+								lowerName.indexOf("масштаб") > -1 ||
+								lowerName.indexOf("size") > -1 ||
+								lowerName === "scale width" ||
+								lowerName === "scale height") {
+								
+								// Проверяем что это числовой параметр
+								try {
+									var testValue = prop.getValue();
+									if (typeof testValue === 'number' || (testValue && typeof testValue === 'object')) {
+										params.scale = prop;
+										alert("НАЙДЕН Scale параметр: " + name);
+									}
+								} catch(e) {}
+							}
 						}
 						
-						// Проверяем Motion компонент
-						var motionComponent = clip.components[1];
-						if (motionComponent) {
-							alert("Motion найден: " + motionComponent.displayName);
-							alert("Количество properties: " + motionComponent.properties.numItems);
-							
-							// Проверяем первые 3 свойства
-							for (var p = 0; p < 3 && p < motionComponent.properties.numItems; p++) {
-								var prop = motionComponent.properties[p];
-								alert("Property[" + p + "]: " + prop.displayName);
-								
-								// Проверяем один ключевой метод
-								alert("addKey доступен: " + (typeof prop.addKey === 'function' ? "ДА" : "НЕТ"));
+						// Если не нашли Scale, берем первый числовой параметр
+						if (!params.scale) {
+							alert("Scale не найден, ищем первый числовой параметр");
+							for (var j = 0; j < motionComponent.properties.numItems; j++) {
+								try {
+									var testProp = motionComponent.properties[j];
+									var testVal = testProp.getValue();
+									if (typeof testVal === 'number' && testVal > 0) {
+										params.scale = testProp;
+										alert("Используем как Scale: " + testProp.displayName);
+										break;
+									}
+								} catch(e) {}
 							}
-						} else {
-							alert("Motion компонент НЕ НАЙДЕН на позиции 1");
 						}
 						
 					} catch(e) {
-						alert("ОШИБКА в диагностике: " + e.toString());
+						alert("Ошибка поиска параметров: " + e.toString());
+					}
+					
+					return params;
+				}
+
+				// ФУНКЦИИ ЭФФЕКТОВ
+				function applyZoomInEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.scale) {
+							alert("Scale параметр не найден");
+							return;
+						}
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var startScale = 100 + (intensity * 30);
+						var endScale = 100;
+						var duration = clip.duration.seconds;
+						
+						alert("Активируем анимацию для Scale");
+						
+						// КЛЮЧЕВОЕ: устанавливаем 2 кадра для создания анимации
+						setKeyframeSafe(params.scale, 0, startScale);
+						setKeyframeSafe(params.scale, duration, endScale);
+						
+						alert("Zoom In кадры установлены: " + startScale + "% -> " + endScale + "%");
+						
+					} catch(e) {
+						alert("Ошибка Zoom In: " + e.toString());
 					}
 				}
+
+				function applyZoomOutEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.scale) return;
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var startScale = 100;
+						var endScale = 100 + (intensity * 30);
+						var duration = clip.duration.seconds;
+						
+						setKeyframeSafe(params.scale, 0, startScale);
+						setKeyframeSafe(params.scale, duration, endScale);
+						
+						$.writeln("Zoom Out применен: " + startScale + "% -> " + endScale + "%");
+						
+					} catch(e) {
+						$.writeln("Ошибка Zoom Out: " + e.toString());
+					}
+				}
+
+				function applyPanLeftEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.position || !params.scale) return;
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = clip.duration.seconds;
+						
+						var scale = 100 + (intensity * 20);
+						setKeyframeSafe(params.scale, 0, scale);
+						
+						var startX = intensity * 50;
+						var endX = -intensity * 50;
+						
+						setKeyframeSafe(params.position, 0, [startX, 0]);
+						setKeyframeSafe(params.position, duration, [endX, 0]);
+						
+						$.writeln("Pan Left применен: X от " + startX + " до " + endX);
+						
+					} catch(e) {
+						$.writeln("Ошибка Pan Left: " + e.toString());
+					}
+				}
+
+				function applyPanRightEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.position || !params.scale) return;
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = clip.duration.seconds;
+						
+						var scale = 100 + (intensity * 20);
+						setKeyframeSafe(params.scale, 0, scale);
+						
+						var startX = -intensity * 50;
+						var endX = intensity * 50;
+						
+						setKeyframeSafe(params.position, 0, [startX, 0]);
+						setKeyframeSafe(params.position, duration, [endX, 0]);
+						
+						$.writeln("Pan Right применен");
+						
+					} catch(e) {
+						$.writeln("Ошибка Pan Right: " + e.toString());
+					}
+				}
+
+				function applyPanUpEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.position || !params.scale) return;
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = clip.duration.seconds;
+						
+						var scale = 100 + (intensity * 20);
+						setKeyframeSafe(params.scale, 0, scale);
+						
+						var startY = intensity * 50;
+						var endY = -intensity * 50;
+						
+						setKeyframeSafe(params.position, 0, [0, startY]);
+						setKeyframeSafe(params.position, duration, [0, endY]);
+						
+						$.writeln("Pan Up применен");
+						
+					} catch(e) {
+						$.writeln("Ошибка Pan Up: " + e.toString());
+					}
+				}
+
+				function applyPanDownEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.position || !params.scale) return;
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = clip.duration.seconds;
+						
+						var scale = 100 + (intensity * 20);
+						setKeyframeSafe(params.scale, 0, scale);
+						
+						var startY = -intensity * 50;
+						var endY = intensity * 50;
+						
+						setKeyframeSafe(params.position, 0, [0, startY]);
+						setKeyframeSafe(params.position, duration, [0, endY]);
+						
+						$.writeln("Pan Down применен");
+						
+					} catch(e) {
+						$.writeln("Ошибка Pan Down: " + e.toString());
+					}
+				}
+
+				function applyRotateEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.rotation || !params.scale) return;
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var angle = effects.rotationAngle || 5;
+						var duration = clip.duration.seconds;
+						
+						var scale = 100 + (intensity * 15);
+						setKeyframeSafe(params.scale, 0, scale);
+						
+						var startRotation = -angle * intensity;
+						var endRotation = angle * intensity;
+						
+						setKeyframeSafe(params.rotation, 0, startRotation);
+						setKeyframeSafe(params.rotation, duration, endRotation);
+						
+						$.writeln("Rotate применен: " + startRotation + "° -> " + endRotation + "°");
+						
+					} catch(e) {
+						$.writeln("Ошибка Rotate: " + e.toString());
+					}
+				}
+
+				function applyDiagonalEffect(motionComponent, effects, clip) {
+					try {
+						var params = getMotionParameters(motionComponent);
+						if (!params.position || !params.scale) return;
+						
+						var intensity = (effects.kenBurnsIntensity || 30) / 100;
+						var duration = clip.duration.seconds;
+						
+						var scale = 100 + (intensity * 25);
+						setKeyframeSafe(params.scale, 0, scale);
+						
+						var offset = intensity * 40;
+						var startX = -offset;
+						var startY = -offset;
+						var endX = offset;
+						var endY = offset;
+						
+						setKeyframeSafe(params.position, 0, [startX, startY]);
+						setKeyframeSafe(params.position, duration, [endX, endY]);
+						
+						$.writeln("Diagonal применен");
+						
+					} catch(e) {
+						$.writeln("Ошибка Diagonal: " + e.toString());
+					}
+				}
+
+				// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+				function setKeyframeSafe(param, time, value) {
+					try {
+						if (!param) {
+							alert("Параметр отсутствует");
+							return false;
+						}
+						
+						// КЛЮЧЕВОЙ МОМЕНТ: Активируем анимацию для параметра!
+						if (typeof param.setTimeVarying === 'function') {
+							param.setTimeVarying(true);
+							alert("Анимация активирована для параметра");
+						}
+						
+						// Альтернативный способ активации
+						if (typeof param.setValueAtTime === 'function') {
+							// Сначала устанавливаем значение в начале для активации анимации
+							param.setValueAtTime(0, value);
+							alert("setValueAtTime с временем 0 - активация");
+							
+							// Теперь устанавливаем нужное значение в нужное время
+							if (time > 0) {
+								param.setValueAtTime(time, value);
+								alert("setValueAtTime основной кадр: t=" + time + ", v=" + value);
+							}
+							return true;
+						}
+						
+						alert("setValueAtTime недоступен");
+						return false;
+						
+					} catch(e) {
+						alert("ОШИБКА: " + e.toString());
+						return false;
+					}
+				}
+				function applyEasingToKenBurns(motionComponent, easingType) {
+					try {
+						$.writeln("Применяем интерполяцию: " + easingType);
+						var params = getMotionParameters(motionComponent);
+						
+						[params.scale, params.position, params.rotation].forEach(function(param) {
+							if (param) {
+								applyEasingToParameter(param, easingType);
+							}
+						});
+						
+					} catch(e) {
+						$.writeln("Ошибка применения интерполяции: " + e.toString());
+					}
+				}
+
+				function applyEasingToParameter(param, easingType) {
+					try {
+						if (typeof param.setInterpolationType === 'function') {
+							switch(easingType) {
+								case 'ease':
+								case 'ease-in-out':
+									param.setInterpolationType('bezier');
+									break;
+								case 'ease-in':
+									param.setInterpolationType('ease-in');
+									break;
+								case 'ease-out':
+									param.setInterpolationType('ease-out');
+									break;
+								default:
+									param.setInterpolationType('linear');
+									break;
+							}
+							$.writeln("Интерполяция установлена: " + easingType);
+						}
+						
+					} catch(e) {
+						$.writeln("Ошибка настройки интерполяции параметра: " + e.toString());
+					}
+				}				
+				
 
 				function applyEasingToMotion(motionComponent, easingType) {
 					try {
